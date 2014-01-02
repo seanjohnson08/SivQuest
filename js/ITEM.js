@@ -14,20 +14,22 @@ var ITEM = new function(){
     
     return $.when(
       $.getJSON(basedir+"json/materials.json",function(moo){self.materials=moo;}),
-      $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}),
+      $.getJSON(basedir+"json/artifacts.json",function(moo){self.artifacts=moo;}),
       $.getJSON(basedir+"json/cloaks.json",function(moo){self.cloaks=moo;}),
       $.getJSON(basedir+"json/weapons.json",function(moo){self.weapons=moo;}),
       $.getJSON(basedir+"json/armor.json",function(moo){self.armor=moo;}),
       $.getJSON(basedir+"json/amulets.json",function(moo){self.amulets=moo;}),
       $.getJSON(basedir+"json/potions.json",function(moo){self.potions=moo;}),
-      $.getJSON(basedir+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
-        for(var moose in self.prefixes.aPrefixes) self.aPre.push(moose);
-        for(moose in self.prefixes.wPrefixes) self.wPre.push(moose);
+      $.getJSON(basedir+"json/prefixes.json").success(function(moo){
+        self.prefixes=moo;
+        self.aPre=_.keys(moo.aPrefixes);
+        self.wPre=_.keys(moo.wPrefixes);
       }),
       
-      $.getJSON(basedir+"json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
-        for(var moose in self.suffixes.aSuffixes) self.aSuf.push(moose);
-        for(moose in self.suffixes.wSuffixes) self.wSuf.push(moose);
+      $.getJSON(basedir+"json/suffixes.json").success(function(moo){
+        self.suffixes=moo;
+        self.aSuf=_.keys(moo.aSuffixes);
+        self.wSuf=_.keys(moo.wSuffixes);
       })
     );
   };
@@ -310,7 +312,7 @@ self.generateItem=function(x,y,z){
     else switch(whatIsIt){
       case "weapon":
         for(i in self.materials) if(self.materials[i].level<=WORLD.level+_.random(0,1)-1)matArr.push(i);
-        for(i in self.weapons) typeArr.push(i);
+        typeArr=_.keys(self.weapons);
         theMat=matArr[_.random(0,matArr.length-1)];
         theType=typeArr[_.random(0,typeArr.length-1)];
         theName=self.materials[theMat].fName+" "+self.weapons[theType].fName;
@@ -338,7 +340,7 @@ self.generateItem=function(x,y,z){
      
       case "armor":
         for(i in self.materials) if(self.materials[i].level<=WORLD.level+_.random(0,1)-1)matArr.push(i);
-        for(i in self.armor) typeArr.push(i);
+        typeArr=_.keys(self.armor);
         theMat=matArr[_.random(0,matArr.length-1)];
         
         theType=typeArr[_.random(0,typeArr.length-1)];
@@ -366,7 +368,7 @@ self.generateItem=function(x,y,z){
       break;
       
       case "potion":
-        for(i in self.potions) typeArr.push(i);
+        typeArr=_.keys(self.potions);
         kind=typeArr[_.random(0,typeArr.length-1)];
         theType=["potion",kind];
         theName="Potion of "+self.potions[kind];
@@ -374,7 +376,7 @@ self.generateItem=function(x,y,z){
       break;
       
       case "amulet":
-        for(i in self.amulets) typeArr.push(i);
+        typeArr=_.keys(self.amulets);
         kind=typeArr[_.random(0,typeArr.length-1)];
         theType=["amulet",kind];
         theName="Amulet of "+self.amulets[kind].name;
@@ -385,7 +387,7 @@ self.generateItem=function(x,y,z){
       break;
       
        case "cloak":
-        for(i in self.cloaks) typeArr.push(i);
+        typeArr=_.keys(self.cloaks);
         kind=typeArr[_.random(0,typeArr.length-1)];
         theType=["cloak",kind];
         theName="Cloak of "+self.cloaks[kind].name;
